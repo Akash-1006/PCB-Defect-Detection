@@ -1,0 +1,149 @@
+{
+    "PCB_ID": "pcb",
+    "defects": [
+        {
+            "class": "Spur",
+            "bbox": [
+                301,
+                401,
+                24,
+                33
+            ],
+            "confidence": 0.8083332777023315,
+            "severity": 4,
+            "root_cause": "Etching / unwanted copper"
+        },
+        {
+            "class": "Spur",
+            "bbox": [
+                143,
+                301,
+                19,
+                25
+            ],
+            "confidence": 0.7973975539207458,
+            "severity": 4,
+            "root_cause": "Etching / unwanted copper"
+        },
+        {
+            "class": "Short",
+            "bbox": [
+                657,
+                252,
+                44,
+                50
+            ],
+            "confidence": 0.7641468048095703,
+            "severity": 9,
+            "root_cause": "Soldering/printing issue"
+        },
+        {
+            "class": "Mouse_bite",
+            "bbox": [
+                589,
+                449,
+                33,
+                22
+            ],
+            "confidence": 0.7538769841194153,
+            "severity": 4,
+            "root_cause": "Etching / copper removal issue"
+        },
+        {
+            "class": "Mouse_bite",
+            "bbox": [
+                325,
+                254,
+                26,
+                26
+            ],
+            "confidence": 0.7407309412956238,
+            "severity": 4,
+            "root_cause": "Etching / copper removal issue"
+        },
+        {
+            "class": "Open_circuit",
+            "bbox": [
+                27,
+                302,
+                24,
+                32
+            ],
+            "confidence": 0.7177251577377319,
+            "severity": 8,
+            "root_cause": "Broken trace / PCB manufacturing defect"
+        },
+        {
+            "class": "Mouse_bite",
+            "bbox": [
+                691,
+                435,
+                30,
+                31
+            ],
+            "confidence": 0.6952846050262451,
+            "severity": 4,
+            "root_cause": "Etching / copper removal issue"
+        },
+        {
+            "class": "Mouse_bite",
+            "bbox": [
+                453,
+                434,
+                37,
+                34
+            ],
+            "confidence": 0.6359909772872925,
+            "severity": 4,
+            "root_cause": "Etching / copper removal issue"
+        },
+        {
+            "class": "Mouse_bite",
+            "bbox": [
+                151,
+                62,
+                28,
+                26
+            ],
+            "confidence": 0.6341462135314941,
+            "severity": 4,
+            "root_cause": "Etching / copper removal issue"
+        },
+        {
+            "class": "Spurious_copper",
+            "bbox": [
+                492,
+                205,
+                34,
+                56
+            ],
+            "confidence": 0.3804934322834015,
+            "severity": 5,
+            "root_cause": "Etching problem"
+        },
+        {
+            "class": "Mouse_bite",
+            "bbox": [
+                587,
+                439,
+                38,
+                32
+            ],
+            "confidence": 0.3424575924873352,
+            "severity": 4,
+            "root_cause": "Etching / copper removal issue"
+        },
+        {
+            "class": "Open_circuit",
+            "bbox": [
+                297,
+                460,
+                23,
+                20
+            ],
+            "confidence": 0.2649652361869812,
+            "severity": 8,
+            "root_cause": "Broken trace / PCB manufacturing defect"
+        }
+    ]
+}

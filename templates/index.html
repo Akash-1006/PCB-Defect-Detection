@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PCB Defect Detection Demo</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background: #1e1e1e; color: #f0f0f0; display: flex; flex-direction: column; min-height: 100vh; }
+  h1 { text-align: center; padding: 20px; color: #4dd0e1; }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+  .upload-section { background: #2a2a2a; padding: 20px; border-radius: 10px; margin-bottom: 30px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+  input[type="file"] { margin: 10px 0; color: #fff; }
+  .method-select { margin: 20px 0; }
+  .method-select label { margin: 0 10px; cursor: pointer; }
+  button { padding: 10px 20px; background: #4dd0e1; color: #1e1e1e; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.3s ease; }
+  button:hover { background: #26c6da; }
+  button:focus { outline: 2px solid #26c6da; outline-offset: 2px; }
+
+  .results { display: flex; flex-wrap: wrap; gap: 20px; }
+  .result-panel { background: #2a2a2a; flex: 1 1 300px; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+  .result-panel img { max-width: 100%; border-radius: 8px; }
+
+  .defects-info { text-align: left; margin-top: 10px; }
+  .spinner { display: none; margin: 20px auto; border: 6px solid #ccc; border-top: 6px solid #4dd0e1; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media(max-width: 768px){ .results { flex-direction: column; } }
+</style>
+</head>
+<body>
+
+<h1>PCB Defect Detection</h1>
+
+<div class="container">
+  <div class="upload-section">
+    <input type="file" id="pcbImages" accept="image/*" multiple /><br/>
+
+    <div class="method-select">
+      <label><input type="radio" name="method" value="yolo" checked> YOLO AI Model</label>
+      <label><input type="radio" name="method" value="rule"> Rule-based AOI</label>
+    </div>
+
+    <button id="analyzeBtn">Analyze</button>
+    <div class="spinner" id="spinner"></div>
+  </div>
+
+  <div class="results" id="resultsContainer"></div>
+
+</div>
+
+<script>
+const pcbImagesInput = document.getElementById('pcbImages');
+const analyzeBtn = document.getElementById('analyzeBtn');
+const spinner = document.getElementById('spinner');
+const resultsContainer = document.getElementById('resultsContainer');
+
+analyzeBtn.addEventListener('click', async () => {
+  const files = pcbImagesInput.files;
+  if (!files.length) {
+    alert("Please upload at least one PCB image.");
+    return;
+  }
+
+  const method = document.querySelector('input[name="method"]:checked').value;
+  const formData = new FormData();
+  for (let i=0; i<files.length; i++) {
+    formData.append('images', files[i]);
+  }
+  formData.append('method', method);
+
+  spinner.style.display = 'block';
+  resultsContainer.innerHTML = '';
+
+  try {
+    const response = await fetch('/batch_analyze', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!response.ok) throw new Error(`Server error: ${response.status}`);
+    const data = await response.json();
+
+    // Display batch statistics
+    const statsDiv = document.createElement('div');
+    statsDiv.className = 'result-panel';
+    statsDiv.innerHTML = `<h2>Batch Statistics</h2>
+      <p>Total Boards: ${data.batch_stats.total_boards}</p>
+      <p>Defect-Free: ${data.batch_stats.defect_free_percentage}%</p>
+      <p>Most Common Defect: ${data.batch_stats.most_common_defect || 'N/A'}</p>`;
+    resultsContainer.appendChild(statsDiv);
+
+    // Display each board's results
+    data.batch_results.forEach(board => {
+      const panel = document.createElement('div');
+      panel.className = 'result-panel';
+      panel.innerHTML = `<h3>${board.processed_image_url.split('/').pop()}</h3>
+        <img src="${board.processed_image_url}" alt="Processed Image"/>
+        <div class="defects-info">
+          <strong>Defects:</strong><br/>
+          ${board.defects.map(d => `Class: ${d.class}, Severity: ${d.severity}, Cause: ${d.root_cause}`).join('<br/>') || 'No defects detected'}
+        </div>`;
+      resultsContainer.appendChild(panel);
+    });
+
+  } catch (error) {
+    alert("Error: " + error.message);
+  } finally {
+    spinner.style.display = 'none';
+  }
+});
+</script>
+</body>
+</html>
