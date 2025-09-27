@@ -1,0 +1,5 @@
+class,bbox,confidence,severity,root_cause
+Mouse_bite,"[1631, 2057, 127, 103]",0.6787154078483582,4,Etching / copper removal issue
+Missing_hole,"[2830, 3240, 58, 56]",0.4571284055709839,9,Drilling issue
+Spurious_copper,"[2341, 1260, 129, 125]",0.3174409568309784,5,Etching problem
+Spurious_copper,"[2350, 1279, 140, 147]",0.31273865699768066,5,Etching problem

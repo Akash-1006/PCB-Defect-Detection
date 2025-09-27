@@ -1,0 +1,41 @@
+{
+    "PCB_ID": "01_short_06",
+    "defects": [
+        {
+            "class": "Short",
+            "bbox": [
+                2067,
+                1377,
+                65,
+                62
+            ],
+            "confidence": 0.8407763242721558,
+            "severity": 9,
+            "root_cause": "Soldering/printing issue"
+        },
+        {
+            "class": "Short",
+            "bbox": [
+                447,
+                918,
+                60,
+                63
+            ],
+            "confidence": 0.8142911195755005,
+            "severity": 9,
+            "root_cause": "Soldering/printing issue"
+        },
+        {
+            "class": "Short",
+            "bbox": [
+                758,
+                1337,
+                64,
+                65
+            ],
+            "confidence": 0.806710958480835,
+            "severity": 9,
+            "root_cause": "Soldering/printing issue"
+        }
+    ]
+}

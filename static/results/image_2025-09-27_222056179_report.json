@@ -1,0 +1,341 @@
+{
+    "PCB_ID": "image_2025-09-27_222056179",
+    "defects": [
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                541,
+                177,
+                15,
+                14
+            ],
+            "confidence": 0.796554684638977,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                733,
+                136,
+                16,
+                13
+            ],
+            "confidence": 0.6952438354492188,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                528,
+                84,
+                13,
+                14
+            ],
+            "confidence": 0.6849824786186218,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                55,
+                128,
+                16,
+                16
+            ],
+            "confidence": 0.6708887219429016,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                348,
+                347,
+                15,
+                15
+            ],
+            "confidence": 0.6668119430541992,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Spurious_copper",
+            "bbox": [
+                985,
+                264,
+                27,
+                28
+            ],
+            "confidence": 0.6625363826751709,
+            "severity": 5,
+            "root_cause": "Etching problem"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                662,
+                226,
+                12,
+                13
+            ],
+            "confidence": 0.6545892953872681,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                509,
+                659,
+                14,
+                13
+            ],
+            "confidence": 0.6526167988777161,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                739,
+                304,
+                15,
+                14
+            ],
+            "confidence": 0.5934478044509888,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                498,
+                435,
+                15,
+                14
+            ],
+            "confidence": 0.5905214548110962,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                379,
+                560,
+                14,
+                15
+            ],
+            "confidence": 0.5590556263923645,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                811,
+                514,
+                13,
+                13
+            ],
+            "confidence": 0.5043227672576904,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                911,
+                768,
+                13,
+                13
+            ],
+            "confidence": 0.4961715042591095,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                839,
+                70,
+                17,
+                16
+            ],
+            "confidence": 0.48296958208084106,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                869,
+                696,
+                14,
+                15
+            ],
+            "confidence": 0.4683186411857605,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Short",
+            "bbox": [
+                447,
+                584,
+                14,
+                12
+            ],
+            "confidence": 0.44771119952201843,
+            "severity": 9,
+            "root_cause": "Soldering/printing issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                418,
+                119,
+                13,
+                13
+            ],
+            "confidence": 0.3800475001335144,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                635,
+                448,
+                13,
+                15
+            ],
+            "confidence": 0.37483689188957214,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                462,
+                613,
+                12,
+                14
+            ],
+            "confidence": 0.37430340051651,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                603,
+                84,
+                12,
+                15
+            ],
+            "confidence": 0.36528435349464417,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                406,
+                184,
+                14,
+                13
+            ],
+            "confidence": 0.3352944254875183,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                888,
+                796,
+                12,
+                13
+            ],
+            "confidence": 0.3299374282360077,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                994,
+                768,
+                14,
+                15
+            ],
+            "confidence": 0.3290873169898987,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                416,
+                492,
+                18,
+                18
+            ],
+            "confidence": 0.31214994192123413,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                979,
+                695,
+                13,
+                15
+            ],
+            "confidence": 0.3077859878540039,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                1130,
+                61,
+                15,
+                16
+            ],
+            "confidence": 0.30119672417640686,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Spurious_copper",
+            "bbox": [
+                977,
+                263,
+                32,
+                29
+            ],
+            "confidence": 0.2988310754299164,
+            "severity": 5,
+            "root_cause": "Etching problem"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                655,
+                477,
+                13,
+                14
+            ],
+            "confidence": 0.2655944228172302,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        }
+    ]
+}

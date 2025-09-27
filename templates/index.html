@@ -138,8 +138,8 @@ header p { animation: float 3s ease-in-out infinite alternate; }
     <h2 class="text-xl font-bold mb-10 text-white">PCB Defect Detector</h2>
     <h3 class="text-sm text-text-muted mb-6">v1.0</h3>
     <ul>
-      <li class="mb-4"><a href="#upload" class="sidebar-link flex items-center gap-3 p-3 sidebar-item-active">📤 Upload</a></li>
-      <li class="mb-4"><a href="#results" class="sidebar-link flex items-center gap-3 p-3 text-text-light hover:bg-slate-700/50 rounded-lg">📊 Results</a></li>
+      <li class="mb-4"><a href="#upload" class="sidebar-link flex items-center gap-3 p-3 sidebar-item-active"> Upload</a></li>
+      <li class="mb-4"><a href="#results" class="sidebar-link flex items-center gap-3 p-3 text-text-light hover:bg-slate-700/50 rounded-lg"> Results</a></li>
     </ul>
   </div>
 </nav>
@@ -183,10 +183,14 @@ header p { animation: float 3s ease-in-out infinite alternate; }
 </main>
 
 <!-- Modal for full-size image -->
-<div id="imageModal">
+<!-- Modal for full-size image with padding -->
+<div id="imageModal" class="p-6">
   <span id="modalClose">&times;</span>
-  <img id="imageModalContent" src="">
+  <div class="flex justify-center items-center h-full">
+    <img id="imageModalContent" src="" class="p-4 rounded-lg max-h-[90%] max-w-[90%]" />
+  </div>
 </div>
+
 
 <script>
 // ======== FRONTEND LOGIC ========

@@ -1,0 +1,4 @@
+class,bbox,confidence,severity,root_cause
+Short,"[710, 1111, 55, 54]",0.8158048391342163,9,Soldering/printing issue
+Short,"[1666, 520, 69, 83]",0.7936996817588806,9,Soldering/printing issue
+Short,"[1605, 1230, 75, 68]",0.7773899435997009,9,Soldering/printing issue

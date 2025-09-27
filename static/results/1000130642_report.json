@@ -1,0 +1,53 @@
+{
+    "PCB_ID": "1000130642",
+    "defects": [
+        {
+            "class": "Mouse_bite",
+            "bbox": [
+                1631,
+                2057,
+                127,
+                103
+            ],
+            "confidence": 0.6787154078483582,
+            "severity": 4,
+            "root_cause": "Etching / copper removal issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                2830,
+                3240,
+                58,
+                56
+            ],
+            "confidence": 0.4571284055709839,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Spurious_copper",
+            "bbox": [
+                2341,
+                1260,
+                129,
+                125
+            ],
+            "confidence": 0.3174409568309784,
+            "severity": 5,
+            "root_cause": "Etching problem"
+        },
+        {
+            "class": "Spurious_copper",
+            "bbox": [
+                2350,
+                1279,
+                140,
+                147
+            ],
+            "confidence": 0.31273865699768066,
+            "severity": 5,
+            "root_cause": "Etching problem"
+        }
+    ]
+}
