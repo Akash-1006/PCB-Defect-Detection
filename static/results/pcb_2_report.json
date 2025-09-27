@@ -1,0 +1,53 @@
+{
+    "PCB_ID": "pcb_2",
+    "defects": [
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                299,
+                313,
+                33,
+                27
+            ],
+            "confidence": 0.7889862656593323,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Spurious_copper",
+            "bbox": [
+                475,
+                39,
+                24,
+                21
+            ],
+            "confidence": 0.42672669887542725,
+            "severity": 5,
+            "root_cause": "Etching problem"
+        },
+        {
+            "class": "Spur",
+            "bbox": [
+                474,
+                39,
+                25,
+                21
+            ],
+            "confidence": 0.35260623693466187,
+            "severity": 4,
+            "root_cause": "Etching / unwanted copper"
+        },
+        {
+            "class": "Spur",
+            "bbox": [
+                433,
+                300,
+                25,
+                20
+            ],
+            "confidence": 0.29525139927864075,
+            "severity": 4,
+            "root_cause": "Etching / unwanted copper"
+        }
+    ]
+}

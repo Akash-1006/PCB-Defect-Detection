@@ -1,0 +1,5 @@
+class,bbox,confidence,severity,root_cause
+Missing_hole,"[299, 313, 33, 27]",0.7889862656593323,9,Drilling issue
+Spurious_copper,"[475, 39, 24, 21]",0.42672669887542725,5,Etching problem
+Spur,"[474, 39, 25, 21]",0.35260623693466187,4,Etching / unwanted copper
+Spur,"[433, 300, 25, 20]",0.29525139927864075,4,Etching / unwanted copper
