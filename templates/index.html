@@ -7,8 +7,7 @@
 
 <!-- Tailwind CSS -->
 <script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
 
 <script>
@@ -22,6 +21,7 @@ tailwind.config = {
         'primary-blue': '#3b82f6',
         'text-light': '#cbd5e1',
         'text-muted': '#64748b',
+        'accent': '#813FF1'
       }
     }
   }
@@ -30,24 +30,102 @@ tailwind.config = {
 
 <style>
 html { scroll-behavior: smooth; }
-body { background: linear-gradient(135deg, #1f1f2e, #0f0f1a); color: #f0f0f0; font-family: "Inter", sans-serif; overflow-x: hidden; }
+body {
+  background: linear-gradient(135deg, #1f1f2e, #0f0f1a);
+  color: #f0f0f0;
+  font-family: "Inter", sans-serif;
+  overflow-x: hidden;
+}
 #tsparticles { position: fixed; width: 100%; height: 100%; z-index: -1; top: 0; left: 0; }
-.sidebar-item-active { background-color: #3b82f6; color: white; border-radius: 0.5rem; }
-.drag-area-border { border: 2px dashed #475569; transition: border-color 0.3s; }
-.drag-area-border:hover { border-color: #3b82f6; }
-.spinner { display: none; }
-.processed-img-placeholder img { width: 100%; height: 100%; object-fit: cover; border-radius: 0.5rem; }
+
+.sidebar-item-active {
+  background: linear-gradient(90deg, #813FF1, #3b82f6);
+  color: white;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease-in-out;
+}
+.drag-area-border { border: 2px dashed #475569; transition: all 0.3s; }
+.drag-area-border:hover { border-color: #3b82f6; transform: scale(1.02); }
+
+.spinner {
+  display: none;
+  border: 4px solid rgba(255,255,255,0.2);
+  border-top: 4px solid #813FF1;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+.processed-img-placeholder {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.75rem;
+}
+.processed-img-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0.75rem;
+  transition: transform 0.4s ease, box-shadow 0.3s;
+  cursor: pointer;
+}
+.processed-img-placeholder img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(129,63,241,0.4);
+}
+.fullscreen-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.processed-img-placeholder:hover .fullscreen-btn {
+  opacity: 1;
+}
+
 .confidence-bar { height: 8px; border-radius: 4px; background-color: #334155; }
-.confidence-bar-fill { height: 100%; border-radius: 4px; background-color: #3b82f6; transition: width 1s ease-out; }
-header h1 { background: linear-gradient(90deg, #a855f7, #4f46e5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.confidence-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #3b82f6, #813FF1);
+  transition: width 1s ease-out;
+}
+
+header h1 {
+  background: linear-gradient(90deg, #a855f7, #4f46e5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 @keyframes float { from {transform: translateY(0);} to {transform: translateY(-8px);} }
 header p { animation: float 3s ease-in-out infinite alternate; }
 
 /* Modal Styles */
-#imageModal { display: none; position: fixed; z-index: 50; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8); }
-#imageModalContent { margin: auto; display: block; max-width: 90%; max-height: 90%; border-radius: 0.5rem; }
-#modalClose { position: absolute; top: 20px; right: 35px; color: #fff; font-size: 40px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-#modalClose:hover { color: #bbb; }
+#imageModal { display: none; position: fixed; z-index: 50; left: 0; top: 0;
+  width: 100%; height: 100%; background-color: rgba(0,0,0,0.9);
+  animation: fadeIn 0.4s ease-in-out;
+}
+#imageModalContent {
+  margin: auto; display: block;
+  max-width: 90%; max-height: 90%;
+  border-radius: 0.75rem;
+  box-shadow: 0 0 30px rgba(129,63,241,0.5);
+  animation: zoomIn 0.4s ease-in-out;
+}
+#modalClose {
+  position: absolute; top: 20px; right: 35px;
+  color: #fff; font-size: 40px; font-weight: bold;
+  cursor: pointer; transition: 0.3s;
+}
+#modalClose:hover { color: #813FF1; }
 </style>
 </head>
 
@@ -55,33 +133,33 @@ header p { animation: float 3s ease-in-out infinite alternate; }
 <div id="tsparticles"></div>
 
 <!-- Sidebar -->
-<nav class="w-64 bg-sidebar-bg p-6 flex flex-col justify-between shadow-2xl">
+<nav class="w-64 bg-sidebar-bg p-6 flex flex-col justify-between shadow-2xl animate__animated animate__fadeInLeft">
   <div>
     <h2 class="text-xl font-bold mb-10 text-white">PCB Defect Detector</h2>
     <h3 class="text-sm text-text-muted mb-6">v1.0</h3>
     <ul>
-      <li class="mb-4"><a href="#upload" class="sidebar-link flex items-center gap-3 p-3 sidebar-item-active">Upload</a></li>
-      <li class="mb-4"><a href="#results" class="sidebar-link flex items-center gap-3 p-3 text-text-light hover:bg-slate-700/50 rounded-lg">Results</a></li>
+      <li class="mb-4"><a href="#upload" class="sidebar-link flex items-center gap-3 p-3 sidebar-item-active">📤 Upload</a></li>
+      <li class="mb-4"><a href="#results" class="sidebar-link flex items-center gap-3 p-3 text-text-light hover:bg-slate-700/50 rounded-lg">📊 Results</a></li>
     </ul>
   </div>
 </nav>
 
 <!-- Main Content -->
-<main class="flex-1 overflow-y-auto p-10">
+<main class="flex-1 overflow-y-auto p-10 animate__animated animate__fadeInUp">
   <header class="mb-10">
     <h1 class="text-3xl font-semibold">Upload PCB Images</h1>
     <p class="text-text-muted">Drag, drop, and analyze PCB images for defects</p>
   </header>
 
   <!-- Upload Area -->
-  <div id="upload" class="bg-card-bg p-8 rounded-xl mb-12 shadow-lg">
-    <div class="drag-area-border h-48 flex flex-col justify-center items-center rounded-lg text-center p-6 hover:bg-slate-700/30">
+  <div id="upload" class="bg-card-bg p-8 rounded-xl mb-12 shadow-lg animate__animated animate__fadeInUp">
+    <div class="drag-area-border h-48 flex flex-col justify-center items-center rounded-lg text-center p-6 hover:bg-slate-700/30 cursor-pointer">
       <p class="text-text-light font-medium mb-3">Drag and drop images here</p>
       <p class="text-text-muted text-sm">Or click to browse your files</p>
       <input type="file" id="pcbImages" accept="image/*" multiple class="hidden"/>
-      <button id="browseFilesBtn" class="mt-4 bg-primary-blue hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg shadow-md">Browse Files</button>
+      <button id="browseFilesBtn" class="mt-4 bg-gradient-to-r from-primary-blue to-accent hover:opacity-90 transition-all text-white font-bold py-2 px-6 rounded-lg shadow-md animate__animated animate__pulse animate__infinite">Browse Files</button>
     </div>
-    <div class="spinner" id="spinner">Processing…</div>
+    <div class="spinner" id="spinner"></div>
   </div>
 
   <!-- Processed Images -->
@@ -119,7 +197,6 @@ const uploadArea = document.getElementById('upload');
 const processedImages = document.getElementById('processedImages');
 const spinner = document.getElementById('spinner');
 const sidebarLinks = document.querySelectorAll('.sidebar-link');
-
 const imageModal = document.getElementById('imageModal');
 const modalContent = document.getElementById('imageModalContent');
 const modalClose = document.getElementById('modalClose');
@@ -150,7 +227,7 @@ function handleFiles(files) {
   uploadAndAnalyze(files);
 }
 
-// ---- Upload to Flask ----
+// ---- Upload to backend ----
 async function uploadAndAnalyze(files) {
   spinner.style.display = "block";
   const formData = new FormData();
@@ -168,19 +245,32 @@ async function uploadAndAnalyze(files) {
   }
 }
 
-// ---- Show backend results with clickable thumbnails ----
+// ---- Show backend results ----
 function displayResults(results) {
   resultsTableBody.innerHTML = '';
   processedImages.innerHTML = '';
 
-  results.forEach(item => {
+  results.forEach((item) => {
     const imgUrl = item.processed_image_url || item.original_image_url || `https://via.placeholder.com/300?text=${item.filename||'image'}`;
 
-    // Processed images grid
+    // Processed images grid with fullscreen button
     const imgCard = document.createElement('div');
-    imgCard.className = "processed-img-placeholder";
-    imgCard.innerHTML = `<img src="${imgUrl}" alt="${item.filename}" class="loaded rounded-md">`;
+    imgCard.className = "processed-img-placeholder animate__animated animate__fadeInUp";
+    imgCard.innerHTML = `
+      <img src="${imgUrl}" alt="${item.filename}" class="loaded rounded-md"/>
+      <button class="fullscreen-btn">Fullscreen</button>
+    `;
     processedImages.appendChild(imgCard);
+
+    // Click image OR button → fullscreen
+    const imgEl = imgCard.querySelector("img");
+    const btnEl = imgCard.querySelector("button");
+    [imgEl, btnEl].forEach(el => {
+      el.addEventListener("click", () => {
+        modalContent.src = imgUrl;
+        imageModal.style.display = "block";
+      });
+    });
 
     // Defects details
     const defectDetails = item.defects.map(d =>
@@ -191,9 +281,9 @@ function displayResults(results) {
        </div>`
     ).join('') || '<span class="text-text-muted">No defects</span>';
 
-    // Table row with clickable thumbnail
+    // Table row
     const row = document.createElement('tr');
-    row.className = 'hover:bg-slate-700/50 transition-colors duration-150';
+    row.className = 'hover:bg-slate-700/50 transition-colors duration-150 animate__animated animate__fadeInUp';
     row.innerHTML = `
       <td class="px-6 py-4 text-sm font-medium text-text-light">
         <img src="${imgUrl}" alt="${item.filename}" class="w-24 h-24 object-cover rounded-md cursor-pointer"/>
@@ -202,7 +292,7 @@ function displayResults(results) {
       <td class="px-6 py-4 text-sm">${avgConfidenceBar(item.defects)}</td>`;
     resultsTableBody.appendChild(row);
 
-    // Add click event to thumbnail
+    // Click thumbnail in table
     row.querySelector('img').addEventListener('click', () => {
       modalContent.src = imgUrl;
       imageModal.style.display = "block";
@@ -212,7 +302,7 @@ function displayResults(results) {
   document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
 }
 
-// Modal close events
+// Modal close
 modalClose.onclick = () => imageModal.style.display = "none";
 imageModal.onclick = e => { if(e.target === imageModal) imageModal.style.display = "none"; }
 
@@ -225,11 +315,11 @@ function avgConfidenceBar(defects){
           <span class="text-xs text-text-muted mt-1 inline-block">${avg.toFixed(1)}%</span>`;
 }
 
-// particles background
+// Particles background
 tsParticles.load("tsparticles", {
   background: { color: "transparent" },
   particles: {
-    number: { value: 60 },
+    number: { value: 70 },
     size: { value: 2 },
     move: { enable: true, speed: 1 },
     links: { enable: true, color: "#813FF1" },
