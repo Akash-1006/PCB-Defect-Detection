@@ -1,0 +1,77 @@
+{
+    "PCB_ID": "WhatsApp_Image_2025-09-23_at_13",
+    "defects": [
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                461,
+                12,
+                24,
+                26
+            ],
+            "confidence": 0.6554647088050842,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                284,
+                1159,
+                20,
+                22
+            ],
+            "confidence": 0.6008778810501099,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                380,
+                1533,
+                41,
+                38
+            ],
+            "confidence": 0.5344171524047852,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                526,
+                620,
+                23,
+                25
+            ],
+            "confidence": 0.4492664039134979,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                345,
+                1111,
+                23,
+                25
+            ],
+            "confidence": 0.332257479429245,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        },
+        {
+            "class": "Missing_hole",
+            "bbox": [
+                595,
+                14,
+                23,
+                23
+            ],
+            "confidence": 0.25029537081718445,
+            "severity": 9,
+            "root_cause": "Drilling issue"
+        }
+    ]
+}

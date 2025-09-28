@@ -1,0 +1,7 @@
+class,bbox,confidence,severity,root_cause
+Missing_hole,"[461, 12, 24, 26]",0.6554647088050842,9,Drilling issue
+Missing_hole,"[284, 1159, 20, 22]",0.6008778810501099,9,Drilling issue
+Missing_hole,"[380, 1533, 41, 38]",0.5344171524047852,9,Drilling issue
+Missing_hole,"[526, 620, 23, 25]",0.4492664039134979,9,Drilling issue
+Missing_hole,"[345, 1111, 23, 25]",0.332257479429245,9,Drilling issue
+Missing_hole,"[595, 14, 23, 23]",0.25029537081718445,9,Drilling issue

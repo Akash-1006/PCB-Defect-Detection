@@ -1,0 +1,3 @@
+class,bbox,confidence,severity,root_cause
+Spur,"[272, 191, 22, 20]",0.7279065847396851,4,Etching / unwanted copper
+Spur,"[242, 323, 16, 19]",0.7066709399223328,4,Etching / unwanted copper

@@ -1,0 +1,4 @@
+class,bbox,confidence,severity,root_cause
+Open_circuit,"[601, 901, 39, 35]",0.7204705476760864,8,Broken trace / PCB manufacturing defect
+Open_circuit,"[1416, 1130, 42, 40]",0.6838009357452393,8,Broken trace / PCB manufacturing defect
+Open_circuit,"[1691, 351, 30, 28]",0.6213669776916504,8,Broken trace / PCB manufacturing defect

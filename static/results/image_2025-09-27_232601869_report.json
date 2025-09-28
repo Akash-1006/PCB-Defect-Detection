@@ -1,0 +1,29 @@
+{
+    "PCB_ID": "image_2025-09-27_232601869",
+    "defects": [
+        {
+            "class": "Spur",
+            "bbox": [
+                272,
+                191,
+                22,
+                20
+            ],
+            "confidence": 0.7279065847396851,
+            "severity": 4,
+            "root_cause": "Etching / unwanted copper"
+        },
+        {
+            "class": "Spur",
+            "bbox": [
+                242,
+                323,
+                16,
+                19
+            ],
+            "confidence": 0.7066709399223328,
+            "severity": 4,
+            "root_cause": "Etching / unwanted copper"
+        }
+    ]
+}

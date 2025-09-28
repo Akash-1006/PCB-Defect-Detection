@@ -12,8 +12,11 @@ app = Flask(__name__)
 
 # --------- CONFIG ----------
 UPLOAD_FOLDER = 'static/results'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+VIDEO_UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(VIDEO_UPLOAD_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# ---------------------------
 
 # Load YOLO model once at startup
 yolo_model = YOLO("best.pt")
@@ -32,7 +35,7 @@ def compute_severity(bbox, defect_class, critical_mask=None, num_defects=1):
         'Mouse_bite': 4,
         'Spur': 4
     }
-    base = class_severity.get(defect_class, 3)  # now matches YOLO classes exactly
+    base = class_severity.get(defect_class, 3)
     x, y, w, h = bbox
     area = w * h
     area_modifier = min(area/(500*500),1)*2
@@ -42,7 +45,6 @@ def compute_severity(bbox, defect_class, critical_mask=None, num_defects=1):
         overlap_modifier = np.sum(roi>0)/(w*h)*2
     severity = base + area_modifier + overlap_modifier
     return round(min(severity,10))
-
 
 def predict_root_cause(defect_class):
     mapping = {
@@ -54,7 +56,6 @@ def predict_root_cause(defect_class):
         'Spur': 'Etching / unwanted copper',
     }
     return mapping.get(defect_class, 'Unknown')
-
 
 def generate_report(pcb_id, defects_info, output_dir):
     json_path = os.path.join(output_dir, f"{pcb_id}_report.json")
@@ -91,6 +92,37 @@ def batch_statistics(batch_defects):
     }
 
 # ---------------------------
+# NEW: Video helpers
+# ---------------------------
+
+def parse_results(results):
+    """Convert YOLO results to JSON-like list of detections."""
+    detections = []
+    for box, cls, conf in zip(results.boxes.xyxy, results.boxes.cls, results.boxes.conf):
+        bbox = [int(box[0]), int(box[1]), int(box[2]-box[0]), int(box[3]-box[1])]
+        defect_class = yolo_model.names[int(cls)]
+        severity = compute_severity(bbox, defect_class)
+        root_cause = predict_root_cause(defect_class)
+        detections.append({
+            "class": defect_class,
+            "bbox": bbox,
+            "confidence": float(conf),
+            "severity": severity,
+            "root_cause": root_cause
+        })
+    return detections
+
+def draw_detections(frame, detections):
+    """Draw YOLO detections with bounding boxes and labels."""
+    for d in detections:
+        x, y, w, h = d["bbox"]
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+        label = f"{d['class']} {d['confidence']:.2f}"
+        cv2.putText(frame, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX,
+                    0.6, (255, 255, 255), 2)
+    return frame
+
+# ---------------------------
 # Flask Routes
 # ---------------------------
 
@@ -113,18 +145,14 @@ def analyze():
     input_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     file.save(input_path)
 
-    # ===== YOLO Detection =====
     if method == 'yolo':
         return analyze_single_image(input_path, filename)
-
-    # ===== Rule-based AOI =====
     elif method == 'rule':
         processed_path = run_rule_based_aoi(input_path, app.config['UPLOAD_FOLDER'])
         rel_path = os.path.relpath(processed_path,
                                    start=os.path.join(app.root_path, 'static')).replace("\\", "/")
         processed_url = url_for('static', filename=rel_path)
         return jsonify({'processed_image_url': processed_url})
-
     else:
         return jsonify({'error': 'Invalid method'}), 400
 
@@ -145,19 +173,93 @@ def batch_analyze():
             single_result = analyze_single_image(input_path, filename)
             batch_results.append(single_result)
         else:
-            # For rule-based, just process image
             processed_path = run_rule_based_aoi(input_path, app.config['UPLOAD_FOLDER'])
             rel_path = os.path.relpath(processed_path,
                                        start=os.path.join(app.root_path, 'static')).replace("\\", "/")
             processed_url = url_for('static', filename=rel_path)
             batch_results.append({"processed_image_url": processed_url, "defects": []})
 
-    # Compute batch stats
     stats = batch_statistics(batch_results)
-
     return jsonify({
         "batch_results": batch_results,
         "batch_stats": stats
+    })
+
+# ---------------------------
+# NEW: Analyze Video Endpoint
+# ---------------------------
+@app.route("/analyze_video", methods=["POST"])
+def analyze_video():
+    if "video" not in request.files:
+        return jsonify({"error": "No video uploaded"}), 400
+
+    video_file = request.files["video"]
+    if video_file.filename == "":
+        return jsonify({"error": "Empty filename"}), 400
+
+    video_filename = secure_filename(video_file.filename)
+    video_path = os.path.join(VIDEO_UPLOAD_FOLDER, video_filename)
+    video_file.save(video_path)
+
+    cap = cv2.VideoCapture(video_path)
+    if not cap.isOpened():
+        return jsonify({"error": "Cannot open video"}), 400
+
+    # ✅ Determine frame interval (3 seconds)
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    frame_interval = int(fps) if fps > 0 else 30  # fallback if fps is unknown
+    frame_interval *= 3                           # <-- capture every 3 seconds
+
+    frame_results = []       # stores defects info per frame
+    frame_image_urls = []    # stores URLs of saved processed frames
+
+    frame_idx = 0
+    processed_idx = 0
+
+    # Create a folder to store frames
+    frames_dir = os.path.join("static", "frames")
+    os.makedirs(frames_dir, exist_ok=True)
+
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        frame_idx += 1
+
+        # ✅ Process only every 3-second frame
+        if frame_idx % frame_interval == 0:
+            processed_idx += 1
+
+            # --- Run YOLOv8 inference ---
+            results = yolo_model(frame)
+            detections = parse_results(results[0])
+
+            # --- Save detection info ---
+            frame_results.append({
+                "filename": f"frame_{processed_idx}.jpg",
+                "defects": detections
+            })
+
+            # --- Draw detections on frame ---
+            processed_frame = draw_detections(frame, detections)
+
+            # --- Save processed frame as image ---
+            frame_filename = f"frame_{processed_idx}.jpg"
+            frame_path = os.path.join(frames_dir, frame_filename)
+            cv2.imwrite(frame_path, processed_frame)
+
+            # --- URL to access frame ---
+            frame_url = url_for('static', filename=f"frames/{frame_filename}", _external=True)
+            frame_image_urls.append(frame_url)
+
+    cap.release()
+
+    if not frame_image_urls:
+        return jsonify({"error": "No frames processed"}), 400
+
+    return jsonify({
+        "processed_frames": frame_image_urls,   # ✅ List of URLs to processed frames
+        "video_results": frame_results          # ✅ Detected defects per frame
     })
 
 # ---------------------------
@@ -182,7 +284,6 @@ def analyze_single_image(input_path, filename):
     final_output = output_dir / f"processed_{uuid.uuid4().hex}.jpg"
     shutil.move(default_output, final_output)
 
-    # --- Severity + Root Cause ---
     defects_info = []
     for result in yolo_results:
         for box, cls, conf in zip(result.boxes.xyxy, result.boxes.cls, result.boxes.conf):
@@ -198,7 +299,6 @@ def analyze_single_image(input_path, filename):
                 "root_cause": root_cause
             })
 
-    # --- Generate Reports ---
     report_paths = generate_report(filename.split('.')[0], defects_info, app.config['UPLOAD_FOLDER'])
 
     rel_path = os.path.relpath(final_output,
@@ -208,7 +308,7 @@ def analyze_single_image(input_path, filename):
     return {"processed_image_url": processed_url, "defects": defects_info, "report_paths": report_paths}
 
 # ---------------------------
-# Rule-based AOI (existing)
+# Rule-based AOI
 # ---------------------------
 def run_rule_based_aoi(test_path: str, output_dir: str) -> str:
     TEMPLATE_PATH = r"C:\Users\Akash Balaji\Downloads\template_pcb.jpg"

@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>PCB Defect Detector v1.0</title>
+<title>PCB Defect Detector v1.3</title>
 
 <!-- Tailwind CSS -->
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
 tailwind.config = {
@@ -42,7 +43,6 @@ body {
   background: linear-gradient(90deg, #813FF1, #3b82f6);
   color: white;
   border-radius: 0.5rem;
-  transition: all 0.3s ease-in-out;
 }
 .drag-area-border { border: 2px dashed #475569; transition: all 0.3s; }
 .drag-area-border:hover { border-color: #3b82f6; transform: scale(1.02); }
@@ -59,43 +59,22 @@ body {
 }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
-.processed-img-placeholder {
-  position: relative;
-  overflow: hidden;
-  border-radius: 0.75rem;
-}
+.processed-img-placeholder { position: relative; overflow: hidden; border-radius: 0.75rem; }
 .processed-img-placeholder img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 0.75rem;
-  transition: transform 0.4s ease, box-shadow 0.3s;
-  cursor: pointer;
+  width: 100%; height: 100%; object-fit: cover;
+  border-radius: 0.75rem; transition: transform 0.4s ease, box-shadow 0.3s; cursor: pointer;
 }
-.processed-img-placeholder img:hover {
-  transform: scale(1.05);
-  box-shadow: 0 10px 20px rgba(129,63,241,0.4);
-}
+.processed-img-placeholder img:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(129,63,241,0.4); }
 .fullscreen-btn {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background: rgba(0,0,0,0.6);
-  color: white;
-  font-size: 0.75rem;
-  padding: 4px 8px;
-  border-radius: 6px;
-  opacity: 0;
-  transition: opacity 0.3s;
+  position: absolute; bottom: 10px; right: 10px;
+  background: rgba(0,0,0,0.6); color: white; font-size: 0.75rem;
+  padding: 4px 8px; border-radius: 6px; opacity: 0; transition: opacity 0.3s;
 }
-.processed-img-placeholder:hover .fullscreen-btn {
-  opacity: 1;
-}
+.processed-img-placeholder:hover .fullscreen-btn { opacity: 1; }
 
 .confidence-bar { height: 8px; border-radius: 4px; background-color: #334155; }
 .confidence-bar-fill {
-  height: 100%;
-  border-radius: 4px;
+  height: 100%; border-radius: 4px;
   background: linear-gradient(90deg, #3b82f6, #813FF1);
   transition: width 1s ease-out;
 }
@@ -105,25 +84,16 @@ header h1 {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-@keyframes float { from {transform: translateY(0);} to {transform: translateY(-8px);} }
-header p { animation: float 3s ease-in-out infinite alternate; }
 
-/* Modal Styles */
+/* Modal */
 #imageModal { display: none; position: fixed; z-index: 50; left: 0; top: 0;
   width: 100%; height: 100%; background-color: rgba(0,0,0,0.9);
-  animation: fadeIn 0.4s ease-in-out;
 }
-#imageModalContent {
-  margin: auto; display: block;
-  max-width: 90%; max-height: 90%;
-  border-radius: 0.75rem;
-  box-shadow: 0 0 30px rgba(129,63,241,0.5);
-  animation: zoomIn 0.4s ease-in-out;
+#imageModalContent { margin: auto; display: block; max-width: 90%; max-height: 90%;
+  border-radius: 0.75rem; box-shadow: 0 0 30px rgba(129,63,241,0.5);
 }
-#modalClose {
-  position: absolute; top: 20px; right: 35px;
-  color: #fff; font-size: 40px; font-weight: bold;
-  cursor: pointer; transition: 0.3s;
+#modalClose { position: absolute; top: 20px; right: 35px;
+  color: #fff; font-size: 40px; font-weight: bold; cursor: pointer;
 }
 #modalClose:hover { color: #813FF1; }
 </style>
@@ -133,115 +103,118 @@ header p { animation: float 3s ease-in-out infinite alternate; }
 <div id="tsparticles"></div>
 
 <!-- Sidebar -->
-<nav class="w-64 bg-sidebar-bg p-6 flex flex-col justify-between shadow-2xl animate__animated animate__fadeInLeft">
+<nav class="w-64 bg-sidebar-bg p-6 flex flex-col justify-between shadow-2xl">
   <div>
     <h2 class="text-xl font-bold mb-10 text-white">PCB Defect Detector</h2>
-    <h3 class="text-sm text-text-muted mb-6">v1.0</h3>
+    <h3 class="text-sm text-text-muted mb-6">v1.3</h3>
     <ul>
       <li class="mb-4"><a href="#upload" class="sidebar-link flex items-center gap-3 p-3 sidebar-item-active"> Upload</a></li>
       <li class="mb-4"><a href="#results" class="sidebar-link flex items-center gap-3 p-3 text-text-light hover:bg-slate-700/50 rounded-lg"> Results</a></li>
+      <li class="mb-4"><a href="#batchStats" class="sidebar-link flex items-center gap-3 p-3 text-text-light hover:bg-slate-700/50 rounded-lg"> Batch Statistics</a></li>
     </ul>
   </div>
 </nav>
 
-<!-- Main Content -->
-<main class="flex-1 overflow-y-auto p-10 animate__animated animate__fadeInUp">
+<!-- Main -->
+<main class="flex-1 overflow-y-auto p-10">
   <header class="mb-10">
-    <h1 class="text-3xl font-semibold">Upload PCB Images</h1>
-    <p class="text-text-muted">Drag, drop, and analyze PCB images for defects</p>
+    <h1 class="text-3xl font-semibold">Upload PCB Data</h1>
+    <p class="text-text-muted">Upload images or video for defect detection</p>
   </header>
 
-  <!-- Upload Area -->
-  <div id="upload" class="bg-card-bg p-8 rounded-xl mb-12 shadow-lg animate__animated animate__fadeInUp">
-    <div class="drag-area-border h-48 flex flex-col justify-center items-center rounded-lg text-center p-6 hover:bg-slate-700/30 cursor-pointer">
-      <p class="text-text-light font-medium mb-3">Drag and drop images here</p>
-      <p class="text-text-muted text-sm">Or click to browse your files</p>
-      <input type="file" id="pcbImages" accept="image/*" multiple class="hidden"/>
-      <button id="browseFilesBtn" class="mt-4 bg-gradient-to-r from-primary-blue to-accent hover:opacity-90 transition-all text-white font-bold py-2 px-6 rounded-lg shadow-md animate__animated animate__pulse animate__infinite">Browse Files</button>
+  <!-- Upload Section -->
+  <div id="upload" class="bg-card-bg p-8 rounded-xl mb-12 shadow-lg">
+    <div class="flex gap-6">
+      <div class="flex-1 drag-area-border h-48 flex flex-col justify-center items-center rounded-lg text-center p-6 hover:bg-slate-700/30 cursor-pointer">
+        <p class="text-text-light font-medium mb-3">Upload Images</p>
+        <input type="file" id="pcbImages" accept="image/*" multiple class="hidden"/>
+        <button id="browseFilesBtn" class="mt-2 bg-gradient-to-r from-primary-blue to-accent text-white font-bold py-2 px-6 rounded-lg shadow-md">Browse Images</button>
+      </div>
+      <div class="flex-1 drag-area-border h-48 flex flex-col justify-center items-center rounded-lg text-center p-6 hover:bg-slate-700/30 cursor-pointer">
+        <p class="text-text-light font-medium mb-3">Upload Video</p>
+        <input type="file" id="pcbVideo" accept="video/*" class="hidden"/>
+        <button id="browseVideoBtn" class="mt-2 bg-gradient-to-r from-primary-blue to-accent text-white font-bold py-2 px-6 rounded-lg shadow-md">Browse Video</button>
+      </div>
     </div>
     <div class="spinner" id="spinner"></div>
   </div>
 
-  <!-- Processed Images -->
-  <h2 class="text-xl font-semibold text-white mb-6">Processed Images</h2>
+  <!-- Processed Results -->
+  <h2 class="text-xl font-semibold text-white mb-6">Processed Output</h2>
   <div id="processedImages" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"></div>
 
-  <!-- Results Table -->
   <h2 id="results" class="text-xl font-semibold text-white mb-6">Results Summary</h2>
   <div class="bg-card-bg p-6 rounded-xl shadow-lg overflow-x-auto">
     <table class="min-w-full divide-y divide-slate-700">
       <thead class="bg-slate-700/50">
         <tr>
-          <th class="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">IMAGE</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">DEFECTS DETECTED</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">CONFIDENCE</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase">FRAME / IMAGE</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase">DEFECTS DETECTED</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase">CONFIDENCE</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-slate-700/50" id="resultsTableBody"></tbody>
     </table>
   </div>
+
+  <!-- Batch Statistics -->
+  <h2 id="batchStats" class="text-xl font-semibold text-white mb-6">Batch Statistics</h2>
+  <div class="bg-card-bg p-6 rounded-xl shadow-lg">
+    <p id="batchSummary" class="text-text-light mb-6">No batch analyzed yet.</p>
+    <canvas id="defectTrendChart" class="mb-6"></canvas>
+    <div id="commonDefects" class="text-text-light"></div>
+  </div>
 </main>
 
-<!-- Modal for full-size image -->
-<!-- Modal for full-size image with padding -->
-<div id="imageModal" class="p-6">
+<!-- Modal -->
+<div id="imageModal">
   <span id="modalClose">&times;</span>
-  <div class="flex justify-center items-center h-full">
-    <img id="imageModalContent" src="" class="p-4 rounded-lg max-h-[90%] max-w-[90%]" />
-  </div>
+  <img id="imageModalContent" src="">
 </div>
 
-
 <script>
-// ======== FRONTEND LOGIC ========
 const browseFilesBtn = document.getElementById('browseFilesBtn');
+const browseVideoBtn = document.getElementById('browseVideoBtn');
 const pcbImagesInput = document.getElementById('pcbImages');
+const pcbVideoInput = document.getElementById('pcbVideo');
 const resultsTableBody = document.getElementById('resultsTableBody');
-const uploadArea = document.getElementById('upload');
 const processedImages = document.getElementById('processedImages');
 const spinner = document.getElementById('spinner');
-const sidebarLinks = document.querySelectorAll('.sidebar-link');
 const imageModal = document.getElementById('imageModal');
 const modalContent = document.getElementById('imageModalContent');
 const modalClose = document.getElementById('modalClose');
+const batchSummary = document.getElementById('batchSummary');
+const commonDefectsDiv = document.getElementById('commonDefects');
+
+let defectTrendChart;
 
 browseFilesBtn.addEventListener('click', () => pcbImagesInput.click());
+browseVideoBtn.addEventListener('click', () => pcbVideoInput.click());
+pcbImagesInput.addEventListener('change', e => handleFiles(e.target.files, "images"));
+pcbVideoInput.addEventListener('change', e => handleFiles(e.target.files, "video"));
 
-// Sidebar smooth scroll & active link
-sidebarLinks.forEach(link => {
-  link.addEventListener('click', e => {
-    e.preventDefault();
-    sidebarLinks.forEach(l => l.classList.remove('sidebar-item-active'));
-    link.classList.add('sidebar-item-active');
-    const target = document.querySelector(link.getAttribute('href'));
-    target.scrollIntoView({ behavior: 'smooth' });
-  });
-});
-
-// Drag & Drop
-const dragArea = uploadArea.querySelector('.drag-area-border');
-['dragenter','dragover','dragleave','drop'].forEach(eventName =>
-  dragArea.addEventListener(eventName, e => { e.preventDefault(); e.stopPropagation(); }, false)
-);
-dragArea.addEventListener('drop', e => handleFiles(e.dataTransfer.files));
-pcbImagesInput.addEventListener('change', e => handleFiles(e.target.files));
-
-function handleFiles(files) {
+async function handleFiles(files, type) {
   if (!files.length) return;
-  uploadAndAnalyze(files);
-}
-
-// ---- Upload to backend ----
-async function uploadAndAnalyze(files) {
   spinner.style.display = "block";
   const formData = new FormData();
-  for (const file of files) formData.append("images", file);
+  if (type === "images") {
+    for (const file of files) formData.append("images", file);
+  } else {
+    formData.append("video", files[0]);
+  }
 
   try {
-    const res = await fetch("/batch_analyze", { method: "POST", body: formData });
+    const endpoint = type === "images" ? "/batch_analyze" : "/analyze_video";
+    const res = await fetch(endpoint, { method: "POST", body: formData });
     if (!res.ok) throw new Error("Server error");
     const data = await res.json();
-    displayResults(data.batch_results);
+
+    let results = type === "video"
+      ? data.video_results.map((item, idx) => ({ ...item, processed_image_url: data.processed_frames[idx] }))
+      : data.batch_results;
+
+    displayResults(results);
+    updateBatchStats(results);
   } catch (err) {
     alert("Upload failed: " + err.message);
   } finally {
@@ -249,86 +222,90 @@ async function uploadAndAnalyze(files) {
   }
 }
 
-// ---- Show backend results ----
 function displayResults(results) {
   resultsTableBody.innerHTML = '';
   processedImages.innerHTML = '';
 
-  results.forEach((item) => {
-    const imgUrl = item.processed_image_url || item.original_image_url || `https://via.placeholder.com/300?text=${item.filename||'image'}`;
-
-    // Processed images grid with fullscreen button
+  results.forEach((item, idx) => {
+    const imgUrl = item.processed_image_url || `https://via.placeholder.com/300?text=Frame-${idx+1}`;
     const imgCard = document.createElement('div');
     imgCard.className = "processed-img-placeholder animate__animated animate__fadeInUp";
-    imgCard.innerHTML = `
-      <img src="${imgUrl}" alt="${item.filename}" class="loaded rounded-md"/>
-      <button class="fullscreen-btn">Fullscreen</button>
-    `;
+    imgCard.innerHTML = `<img src="${imgUrl}" alt="frame-${idx+1}" />
+                         <button class="fullscreen-btn">Fullscreen</button>`;
     processedImages.appendChild(imgCard);
 
-    // Click image OR button → fullscreen
-    const imgEl = imgCard.querySelector("img");
-    const btnEl = imgCard.querySelector("button");
-    [imgEl, btnEl].forEach(el => {
+    [imgCard.querySelector("img"), imgCard.querySelector("button")].forEach(el => {
       el.addEventListener("click", () => {
         modalContent.src = imgUrl;
         imageModal.style.display = "block";
       });
     });
 
-    // Defects details
-    const defectDetails = item.defects.map(d =>
-      `<div class="mb-1">
-         <span class="font-semibold">${d.class}</span>
-         <span class="ml-2 text-xs text-text-muted">(Severity: ${d.severity}, ${d.confidence.toFixed(1)} conf)</span><br>
-         <span class="text-xs text-purple-400">Cause: ${d.root_cause}</span>
-       </div>`
+    const defectDetails = item.defects?.map(d =>
+      `<div class="mb-1"><span class="font-semibold">${d.class}</span>
+       <span class="ml-2 text-xs text-text-muted">(${d.confidence.toFixed(1)} conf)</span></div>`
     ).join('') || '<span class="text-text-muted">No defects</span>';
 
-    // Table row
     const row = document.createElement('tr');
-    row.className = 'hover:bg-slate-700/50 transition-colors duration-150 animate__animated animate__fadeInUp';
-    row.innerHTML = `
-      <td class="px-6 py-4 text-sm font-medium text-text-light">
-        <img src="${imgUrl}" alt="${item.filename}" class="w-24 h-24 object-cover rounded-md cursor-pointer"/>
-      </td>
-      <td class="px-6 py-4 text-sm text-text-light">${defectDetails}</td>
-      <td class="px-6 py-4 text-sm">${avgConfidenceBar(item.defects)}</td>`;
+    row.innerHTML = `<td class="px-6 py-4 text-sm"><img src="${imgUrl}" class="w-20 h-20 object-cover rounded-md cursor-pointer"/></td>
+                     <td class="px-6 py-4 text-sm">${defectDetails}</td>
+                     <td class="px-6 py-4 text-sm">${avgConfidenceBar(item.defects || [])}</td>`;
     resultsTableBody.appendChild(row);
 
-    // Click thumbnail in table
-    row.querySelector('img').addEventListener('click', () => {
+    row.querySelector("img").addEventListener("click", () => {
       modalContent.src = imgUrl;
       imageModal.style.display = "block";
     });
   });
-
-  document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
 }
 
-// Modal close
+function updateBatchStats(results) {
+  const totalImages = results.length;
+  const defectImages = results.filter(r => r.defects && r.defects.length > 0).length;
+  const defectPercentage = totalImages ? ((defectImages / totalImages) * 100).toFixed(1) : 0;
+
+  batchSummary.innerHTML = `Total Images/Frames: <b>${totalImages}</b><br>Defect Percentage: <b>${defectPercentage}%</b>`;
+
+  const trendData = results.map((r, i) => (r.defects?.length > 0 ? 1 : 0));
+  if (defectTrendChart) defectTrendChart.destroy();
+  const ctx = document.getElementById('defectTrendChart').getContext('2d');
+  defectTrendChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: results.map((_, i) => `Img ${i+1}`),
+      datasets: [{
+        label: 'Defects Detected (1=Yes, 0=No)',
+        data: trendData,
+        borderColor: '#813FF1',
+        backgroundColor: 'rgba(129,63,241,0.3)',
+        tension: 0.4,
+        fill: true
+      }]
+    }
+  });
+
+  let defectCount = {};
+  results.forEach(r => r.defects?.forEach(d => {
+    defectCount[d.class] = (defectCount[d.class] || 0) + 1;
+  }));
+  commonDefectsDiv.innerHTML = "<h3 class='text-lg font-semibold mb-2'>Common Defects</h3>" +
+    (Object.keys(defectCount).length ? Object.entries(defectCount).map(([k,v]) => `<div>${k}: ${v}</div>`).join('') : "No defects detected in this batch.");
+}
+
 modalClose.onclick = () => imageModal.style.display = "none";
 imageModal.onclick = e => { if(e.target === imageModal) imageModal.style.display = "none"; }
 
 function avgConfidenceBar(defects){
   if (!defects.length) return '';
   const avg = defects.reduce((a,b) => a + b.confidence, 0) / defects.length * 100;
-  return `<div class="confidence-bar">
-            <div class="confidence-bar-fill" style="width:${avg}%"></div>
-          </div>
+  return `<div class="confidence-bar"><div class="confidence-bar-fill" style="width:${avg}%"></div></div>
           <span class="text-xs text-text-muted mt-1 inline-block">${avg.toFixed(1)}%</span>`;
 }
 
-// Particles background
 tsParticles.load("tsparticles", {
   background: { color: "transparent" },
-  particles: {
-    number: { value: 70 },
-    size: { value: 2 },
-    move: { enable: true, speed: 1 },
-    links: { enable: true, color: "#813FF1" },
-    color: { value: "#813FF1" }
-  }
+  particles: { number: { value: 70 }, size: { value: 2 }, move: { enable: true, speed: 1 },
+               links: { enable: true, color: "#813FF1" }, color: { value: "#813FF1" } }
 });
 </script>
 </body>

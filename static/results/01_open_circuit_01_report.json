@@ -1,0 +1,41 @@
+{
+    "PCB_ID": "01_open_circuit_01",
+    "defects": [
+        {
+            "class": "Open_circuit",
+            "bbox": [
+                1076,
+                1341,
+                34,
+                32
+            ],
+            "confidence": 0.74063640832901,
+            "severity": 8,
+            "root_cause": "Broken trace / PCB manufacturing defect"
+        },
+        {
+            "class": "Open_circuit",
+            "bbox": [
+                1537,
+                1152,
+                43,
+                41
+            ],
+            "confidence": 0.6522324085235596,
+            "severity": 8,
+            "root_cause": "Broken trace / PCB manufacturing defect"
+        },
+        {
+            "class": "Open_circuit",
+            "bbox": [
+                1685,
+                460,
+                38,
+                36
+            ],
+            "confidence": 0.362108051776886,
+            "severity": 8,
+            "root_cause": "Broken trace / PCB manufacturing defect"
+        }
+    ]
+}
